@@ -81,7 +81,7 @@ func testRestoreConfigs(t *testing.T, initialConfigsFolder string, downloadFolde
 	os.Setenv("NEW_CLI", "0")
 }
 
-func preparation_uploadConfigs(t *testing.T, fs afero.IOFS, suffixTest string, configFolder string, envFile string) error {
+func preparation_uploadConfigs(t *testing.T, fs afero.Fs, suffixTest string, configFolder string, envFile string) error {
 	util.Log.Info("BEGIN PREPARATION PROCESS")
 	suffix := getTimestamp() + suffixTest
 	transformers := []func(string) string{getTransformerFunc(suffix)}
@@ -99,11 +99,11 @@ func preparation_uploadConfigs(t *testing.T, fs afero.IOFS, suffixTest string, c
 	assert.Equal(t, statusCode, 0)
 	return nil
 }
-func execution_downloadConfigs(t *testing.T, fs afero.IOFS, downloadFolder string, envFile string,
+func execution_downloadConfigs(t *testing.T, fs afero.Fs, downloadFolder string, envFile string,
 	apisToDownload string, suffixTest string) error {
 	util.Log.Info("BEGIN DOWNLOAD PROCESS")
 	//Download
-	err := fs.MkdirAll(downloadFolder, 0777)
+	err := fs.Fs.MkdirAll(downloadFolder, 0777)
 	if err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func execution_downloadConfigs(t *testing.T, fs afero.IOFS, downloadFolder strin
 
 	return nil
 }
-func validation_uploadDownloadedConfigs(t *testing.T, fs afero.IOFS, downloadFolder string,
+func validation_uploadDownloadedConfigs(t *testing.T, fs afero.Fs, downloadFolder string,
 	envFile string) {
 	util.Log.Info("BEGIN VALIDATION PROCESS")
 	//Shows you the downloaded files list in the command line
@@ -147,7 +147,7 @@ func validation_uploadDownloadedConfigs(t *testing.T, fs afero.IOFS, downloadFol
 }
 
 // Deletes all configs that end with "_suffix", where suffix == suffixTest+suffixTimestamp
-func cleanupEnvironmentConfigs(t *testing.T, fs afero.IOFS, envFile, suffix string) {
+func cleanupEnvironmentConfigs(t *testing.T, fs afero.Fs, envFile, suffix string) {
 	util.Log.Info("BEGIN CLEANUP PROCESS")
 	environments, errs := environment.LoadEnvironmentList("", envFile, fs)
 	FailOnAnyError(errs, "loading of environments failed")
