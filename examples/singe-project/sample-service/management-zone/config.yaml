@@ -1,0 +1,20 @@
+configs:
+- id: management-zone-dev-saas-cluster8
+  config:
+    name: Cl_Sprint_DemoAbility
+    parameters:
+      hostGroupName:
+    template: zone.json
+    skip: true
+  groupOverrides:
+  - group: dev
+    override:
+      skip: false
+      parameters:
+        hostGroupName: "dev-host-group"
+
+  - group: prod
+    override:
+      skip: false
+      parameters:
+        hostGroupName: "prod-host-group"

@@ -1,0 +1,24 @@
+{
+    "name": "{{ .name }}",
+    "rules": [
+        {
+            "type": "HOST",
+            "enabled": true,
+            "propagationTypes": [],
+            "conditions": [
+                {
+                    "key": {
+                        "attribute": "HOST_GROUP_NAME"
+                    },
+                    "comparisonInfo": {
+                        "type": "STRING",
+                        "operator": "EQUALS",
+                        "value": "{{ .hostGroupName }}",
+                        "negate": false,
+                        "caseSensitive": false
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "dashboardMetadata": {
+        "name": "{{ .name }}",
+        "shared": true,
+        "owner": "{{ .owner }}",
+        "sharingDetails": {
+            "linkShared": true,
+            "published": true
+        },
+        "dashboardFilter": {
+            "timeframe": ""
+        }
+    },
+    "tiles": [
+        {
+            "name": "Overview {{ .zoneId }}",
+            "tileType": "HEADER",
+            "configured": true,
+            "bounds": {
+                "top": 0,
+                "left": 0,
+                "width": 304,
+                "height": 38
+            },
+            "tileFilter": {}
+        }
+    ]
+}
