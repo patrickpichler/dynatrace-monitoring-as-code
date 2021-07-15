@@ -171,7 +171,7 @@ func parseDefinition(fs afero.Fs, context *ConfigLoaderContext,
 	results := make([]Config, 0)
 	var errors []error
 
-	groupOverrideMap  := toGroupOverrideMap(definition.GroupOverrides)
+	groupOverrideMap := toGroupOverrideMap(definition.GroupOverrides)
 	environmentOverrideMap := toEnvironmentOverrideMap(definition.EnvironmentOverrides)
 
 	for _, environment := range context.Environments {
