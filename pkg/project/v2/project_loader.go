@@ -33,7 +33,15 @@ type ProjectLoaderContext struct {
 func LoadProjects(fs afero.Fs, context ProjectLoaderContext) ([]Project, []error) {
 	environments := toEnvironmentSlice(context.Manifest.Environments)
 	projects := make([]Project, 0)
-	workingDirFs := afero.NewBasePathFs(fs, context.WorkingDir)
+
+	var workingDirFs afero.Fs
+
+	if context.WorkingDir == "." {
+		workingDirFs = fs
+	} else {
+		workingDirFs = afero.NewBasePathFs(fs, context.WorkingDir)
+	}
+
 	var errors []error
 
 	for _, projectDefinition := range context.Manifest.Projects {

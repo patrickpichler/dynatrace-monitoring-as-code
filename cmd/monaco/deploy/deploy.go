@@ -39,6 +39,12 @@ func Deploy(fs afero.Fs, workingDir string, environmentsFile string,
 	specificEnvironment string, specificProjects string, dryRun bool, continueOnError bool) error {
 	apis := api.NewApis()
 
+	workingDir, err := filepath.Abs(workingDir)
+
+	if err != nil {
+		return fmt.Errorf("cannot transform workingDir to absolute path: %s", err)
+	}
+
 	manifest, projects, configLoadErrors := loadConfigs(fs, apis, environmentsFile,
 		specificEnvironment, specificProjects, workingDir)
 
@@ -165,14 +171,13 @@ func loadConfigs(fs afero.Fs, apis map[string]api.Api, environmentsFile string,
 		return manifest.Manifest{}, nil, errors
 	}
 
-	// only allow access to files inside the working dir
-	var workingDirFs afero.Fs
+	workingDir, err := filepath.Abs(workingDir)
 
-	if workingDir == "." {
-		workingDirFs = fs
-	} else {
-		workingDirFs = afero.NewBasePathFs(fs, workingDir)
+	if err != nil {
+		return manifest.Manifest{}, nil, []error{err}
 	}
+
+	workingDirFs := afero.NewBasePathFs(fs, workingDir)
 
 	projects, err := projectv1.LoadProjectsToDeploy(workingDirFs, specificProjects, apis, ".")
 

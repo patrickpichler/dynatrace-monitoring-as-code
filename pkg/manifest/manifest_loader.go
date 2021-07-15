@@ -121,21 +121,19 @@ func parseManifest(context *ManifestLoaderContext, data []byte) (Manifest, []err
 
 	var errors []error
 
-	workingDir, err := filepath.Abs(filepath.Dir(manifestPath))
+	workingDir := filepath.Dir(manifestPath)
+	var workingDirFs afero.Fs
 
-	if err != nil {
-		return Manifest{}, []error{
-			&ManifestLoaderError{
-				ManifestPath: context.ManifestPath,
-				Reason:       fmt.Sprintf("cannot find absolute path to manifest: `%s`", err),
-			},
-		}
+	if workingDir == "." {
+		workingDirFs = context.Fs
+	} else {
+		workingDirFs = afero.NewBasePathFs(context.Fs, workingDir)
 	}
 
 	relativeManifestPath := filepath.Base(manifestPath)
 
 	projectDefinitions, projectErrors := toProjectDefinitions(&projectLoaderContext{
-		fs:           afero.NewBasePathFs(context.Fs, workingDir),
+		fs:           workingDirFs,
 		manifestPath: relativeManifestPath,
 	}, manifest.Projects)
 
