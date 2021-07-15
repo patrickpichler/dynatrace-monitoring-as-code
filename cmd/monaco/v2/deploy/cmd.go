@@ -26,7 +26,7 @@ import (
 	deploy "github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/deploy/v2"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/manifest"
 	project "github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2"
-	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/sort"
+	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/topologysort"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/rest"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/util"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/util/client"
@@ -101,7 +101,7 @@ func Deploy(fs afero.Fs, deploymentManifestPath string, specificEnvironment stri
 		projects = projectsWithDependencies
 	}
 
-	sortedConfigs, errs := sort.GetSortedConfigsForEnvironments(projects, environmentNames)
+	sortedConfigs, errs := topologysort.GetSortedConfigsForEnvironments(projects, environmentNames)
 
 	if errs != nil {
 		// TODO add grouping and print proper error repot

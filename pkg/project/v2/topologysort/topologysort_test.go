@@ -14,7 +14,7 @@
 
 // +build unit
 
-package sort
+package topologysort
 
 import (
 	"testing"

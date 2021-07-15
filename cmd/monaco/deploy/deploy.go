@@ -27,7 +27,7 @@ import (
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/manifest"
 	projectv1 "github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project"
 	projectv2 "github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2"
-	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/sort"
+	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/topologysort"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/rest"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/util"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/util/client"
@@ -54,7 +54,7 @@ func Deploy(fs afero.Fs, workingDir string, environmentsFile string,
 		return fmt.Errorf("encountered errors while trying to load configs. check logs")
 	}
 
-	sortedConfigs, errs := sort.GetSortedConfigsForEnvironments(projects, toEnvironmentNames(manifest.Environments))
+	sortedConfigs, errs := topologysort.GetSortedConfigsForEnvironments(projects, toEnvironmentNames(manifest.Environments))
 
 	if errs != nil {
 		util.PrintErrors(configLoadErrors)

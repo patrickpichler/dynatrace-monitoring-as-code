@@ -23,7 +23,7 @@ import (
 	configErrors "github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/config/v2/errors"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/config/v2/parameter"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/config/v2/template"
-	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/sort"
+	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/topologysort"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/rest"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/util"
 )
@@ -165,7 +165,7 @@ func deployConfig(client rest.DynatraceClient, apis map[string]api.Api,
 
 	var errors []error
 
-	parameters, err := sort.SortParameters(conf.Group, conf.Environment, conf.Coordinate, conf.Parameters)
+	parameters, err := topologysort.SortParameters(conf.Group, conf.Environment, conf.Coordinate, conf.Parameters)
 
 	if err != nil {
 		errors = append(errors, err)
@@ -281,7 +281,7 @@ func extractConfigName(conf *config.Config, properties parameter.Properties) (st
 }
 
 func resolveParameterValues(client rest.DynatraceClient, conf *config.Config,
-	entities map[coordinate.Coordinate]parameter.ResolvedEntity, parameters []sort.ParameterWithName,
+	entities map[coordinate.Coordinate]parameter.ResolvedEntity, parameters []topologysort.ParameterWithName,
 	dryRun bool) (parameter.Properties, []error) {
 
 	var errors []error

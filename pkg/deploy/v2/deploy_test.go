@@ -25,7 +25,7 @@ import (
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/config/v2/coordinate"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/config/v2/parameter"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/config/v2/template"
-	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/sort"
+	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/project/v2/topologysort"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/util/client"
 	"github.com/dynatrace-oss/dynatrace-monitoring-as-code/pkg/util/test"
 	"github.com/google/uuid"
@@ -38,7 +38,7 @@ func TestResolveParameterValues(t *testing.T) {
 	ownerParameterName := "owner"
 	timeout := 5
 	timeoutParameterName := "timeout"
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -84,7 +84,7 @@ func TestResolveParameterValues(t *testing.T) {
 }
 
 func TestResolveParameterValuesShouldFailWhenReferencingNonExistingConfig(t *testing.T) {
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -130,7 +130,7 @@ func TestResolveParameterValuesShouldFailWhenReferencingSkippedConfig(t *testing
 		Config:  "zone1",
 	}
 
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -173,7 +173,7 @@ func TestResolveParameterValuesShouldFailWhenReferencingSkippedConfig(t *testing
 }
 
 func TestResolveParameterValuesShouldFailWhenParameterResolveReturnsError(t *testing.T) {
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -415,7 +415,7 @@ func TestDeployConfig(t *testing.T) {
 	ownerParameterName := "owner"
 	timeout := 5
 	timeoutParameterName := "timeout"
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -470,7 +470,7 @@ func TestDeployConfig(t *testing.T) {
 
 func TestDeployConfigShouldFailOnAnAlreadyKnownEntityName(t *testing.T) {
 	name := "test"
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -518,7 +518,7 @@ func TestDeployConfigShouldFailCyclicParameterDependencies(t *testing.T) {
 		Config:  "dashboard-1",
 	}
 
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -571,7 +571,7 @@ func TestDeployConfigShouldFailCyclicParameterDependencies(t *testing.T) {
 }
 
 func TestDeployConfigShouldFailOnMissingNameParameter(t *testing.T) {
-	parameters := []sort.ParameterWithName{}
+	parameters := []topologysort.ParameterWithName{}
 
 	client := &client.DummyClient{}
 	conf := config.Config{
@@ -601,7 +601,7 @@ func TestDeployConfigShouldFailOnMissingNameParameter(t *testing.T) {
 }
 
 func TestDeployConfigShouldFailOnReferenceOnUnknownConfig(t *testing.T) {
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -653,7 +653,7 @@ func TestDeployConfigShouldFailOnReferenceOnSkipConfig(t *testing.T) {
 		Config:  "dashboard",
 	}
 
-	parameters := []sort.ParameterWithName{
+	parameters := []topologysort.ParameterWithName{
 		{
 			Name: config.NameParameter,
 			Parameter: &test.DummyParameter{
@@ -703,7 +703,7 @@ func TestDeployConfigShouldFailOnReferenceOnSkipConfig(t *testing.T) {
 }
 
 func TestDeployConfigShouldFailOnUnknownApi(t *testing.T) {
-	parameters := []sort.ParameterWithName{}
+	parameters := []topologysort.ParameterWithName{}
 
 	client := &client.DummyClient{}
 	conf := config.Config{
@@ -729,7 +729,7 @@ func TestDeployConfigShouldFailOnUnknownApi(t *testing.T) {
 	assert.Assert(t, len(errors) > 0, "there should be errors (no errors: %d)", len(errors))
 }
 
-func toParameterMap(params []sort.ParameterWithName) map[string]parameter.Parameter {
+func toParameterMap(params []topologysort.ParameterWithName) map[string]parameter.Parameter {
 	result := make(map[string]parameter.Parameter)
 
 	for _, p := range params {
@@ -739,7 +739,7 @@ func toParameterMap(params []sort.ParameterWithName) map[string]parameter.Parame
 	return result
 }
 
-func toReferences(params []sort.ParameterWithName) []coordinate.Coordinate {
+func toReferences(params []topologysort.ParameterWithName) []coordinate.Coordinate {
 	var result []coordinate.Coordinate
 
 	for _, p := range params {
