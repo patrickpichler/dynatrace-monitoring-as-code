@@ -44,9 +44,8 @@ func Deploy(fs afero.Fs, deploymentManifestPath string, specificEnvironment stri
 	})
 
 	if errs != nil {
-		for _, err := range errs {
-			util.Log.Error(err.Error())
-		}
+		// TODO add grouping and print proper error repot
+		util.PrintErrors(errs)
 		return errors.New("error while loading environments")
 	}
 
@@ -76,6 +75,8 @@ func Deploy(fs afero.Fs, deploymentManifestPath string, specificEnvironment stri
 	})
 
 	if errs != nil {
+		// TODO add grouping and print proper error repot
+		util.PrintErrors(errs)
 		return errors.New("error while loading projects")
 	}
 
@@ -98,6 +99,8 @@ func Deploy(fs afero.Fs, deploymentManifestPath string, specificEnvironment stri
 	sortedConfigs, errs := sort.GetSortedConfigsForEnvironments(projects, environmentNames)
 
 	if errs != nil {
+		// TODO add grouping and print proper error repot
+		util.PrintErrors(errs)
 		return errors.New("error during sort")
 	}
 
@@ -129,15 +132,15 @@ func Deploy(fs afero.Fs, deploymentManifestPath string, specificEnvironment stri
 
 		errors := deploy.DeployConfigs(client, apis, configs, continueOnError, dryRun)
 
-		if errors != nil {
-			deploymentErrors = append(deploymentErrors, errors...)
-		}
+		deploymentErrors = append(deploymentErrors, errors...)
 	}
 
 	if deploymentErrors != nil {
 		printErrorReport(deploymentErrors)
 
 		return errors.New("errors during deploy")
+	} else {
+		util.Log.Info("Deployment finished without errors")
 	}
 
 	return nil
@@ -277,8 +280,8 @@ func filterProjectIdsByName(projects []project.Project, names []string) ([]strin
 	foundProjects := map[string]struct{}{}
 
 	for _, p := range projects {
-		if found, name := containsName(names, p.Id); found {
-			foundProjects[name] = struct{}{}
+		if containsName(names, p.Id) {
+			foundProjects[p.Id] = struct{}{}
 			result = append(result, p.Id)
 		}
 	}
@@ -306,11 +309,7 @@ func loadProjectsWithDependencies(projects []project.Project, projectIdsToLoad [
 	var result []project.Project
 	var unknownProjects []string
 
-	for {
-		if len(toCheck) == 0 {
-			break
-		}
-
+	for len(toCheck) > 0 {
 		current := toCheck[0]
 		toCheck = toCheck[1:]
 
@@ -348,14 +347,14 @@ func toProjectMap(projects []project.Project) map[string]project.Project {
 	return result
 }
 
-func containsName(names []string, name string) (bool, string) {
+func containsName(names []string, name string) bool {
 	for _, n := range names {
 		if n == name {
-			return true, n
+			return true
 		}
 	}
 
-	return false, ""
+	return false
 }
 
 func toEnvironmentMap(environments []manifest.EnvironmentDefinition) map[string]manifest.EnvironmentDefinition {

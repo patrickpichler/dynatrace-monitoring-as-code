@@ -173,9 +173,7 @@ func deployConfig(client rest.DynatraceClient, apis map[string]api.Api,
 
 	properties, errs := resolveParameterValues(client, conf, entities, parameters, dryRun)
 
-	if errs != nil {
-		errors = append(errors, errs...)
-	}
+	errors = append(errors, errs...)
 
 	configName, err := extractConfigName(conf, properties)
 
@@ -324,7 +322,7 @@ func resolveParameterValues(client rest.DynatraceClient, conf *config.Config,
 		}
 	}
 
-	if errors != nil {
+	if len(errors) > 0 {
 		// we want to return the partially resolved properties here, to find
 		// more errors in the outer logic
 		return properties, errors
@@ -336,8 +334,7 @@ func resolveParameterValues(client rest.DynatraceClient, conf *config.Config,
 func validateParameterReferences(configCoordinates coordinate.Coordinate,
 	group string, environment string,
 	entities map[coordinate.Coordinate]parameter.ResolvedEntity,
-	paramName string, param parameter.Parameter) []error {
-	var errors []error
+	paramName string, param parameter.Parameter) (errors []error) {
 
 	for _, ref := range param.GetReferences() {
 		// we have to ignore references to the same config,

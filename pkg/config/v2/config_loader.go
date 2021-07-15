@@ -43,15 +43,12 @@ type LoaderContext struct {
 // It will try to parse all configurations it finds and returns a list of parsed
 // configs. If any error was encountered, the list of configs will be nil and
 // only the error slice will be filled.
-func LoadConfigs(fs afero.Fs, context *LoaderContext) ([]Config, []error) {
+func LoadConfigs(fs afero.Fs, context *LoaderContext) (result []Config, errors []error) {
 	filesInFolder, err := afero.ReadDir(fs, context.Path)
 
 	if err != nil {
 		return nil, []error{err}
 	}
-
-	result := make([]Config, 0)
-	var errors []error
 
 	for _, file := range filesInFolder {
 		filename := file.Name()
@@ -128,7 +125,7 @@ func (e *DefinitionParserError) Error() string {
 		e.Path, e.Reason)
 }
 
-func parseConfigs(fs afero.Fs, context *LoaderContext, filePath string) ([]Config, []error) {
+func parseConfigs(fs afero.Fs, context *LoaderContext, filePath string) (configs []Config, errors []error) {
 	data, err := afero.ReadFile(fs, filePath)
 	folder := filepath.Dir(filePath)
 
@@ -143,9 +140,6 @@ func parseConfigs(fs afero.Fs, context *LoaderContext, filePath string) ([]Confi
 	if err != nil {
 		return nil, []error{err}
 	}
-
-	configs := make([]Config, 0)
-	var errors []error
 
 	configLoaderContext := &ConfigLoaderContext{
 		LoaderContext: context,
@@ -177,20 +171,7 @@ func parseDefinition(fs afero.Fs, context *ConfigLoaderContext,
 	results := make([]Config, 0)
 	var errors []error
 
-	groupOverrideMap, err := toGroupOverrideMap(definition.GroupOverrides)
-
-	if err != nil {
-		return nil, []error{&DefinitionParserError{
-			Location: coordinate.Coordinate{
-				Project: context.ProjectId,
-				Api:     context.ApiId,
-				Config:  configId,
-			},
-			Path:   context.Path,
-			Reason: fmt.Sprint(err),
-		}}
-	}
-
+	groupOverrideMap  := toGroupOverrideMap(definition.GroupOverrides)
 	environmentOverrideMap := toEnvironmentOverrideMap(definition.EnvironmentOverrides)
 
 	for _, environment := range context.Environments {
@@ -222,14 +203,14 @@ func toEnvironmentOverrideMap(environments []environmentOverride) map[string]env
 	return result
 }
 
-func toGroupOverrideMap(groups []groupOverride) (map[string]groupOverride, error) {
+func toGroupOverrideMap(groups []groupOverride) map[string]groupOverride {
 	result := make(map[string]groupOverride)
 
 	for _, group := range groups {
 		result[group.Group] = group
 	}
 
-	return result, nil
+	return result
 }
 
 func parseDefinitionForEnvironment(fs afero.Fs, context *ConfigLoaderContext,
@@ -405,7 +386,7 @@ func parseSkip(context *ConfigLoaderContext, environment manifest.EnvironmentDef
 		case "true":
 			return true, nil
 		case "false":
-			return true, nil
+			return false, nil
 		}
 
 		return false, &DetailedDefinitionParserError{

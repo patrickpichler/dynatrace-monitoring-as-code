@@ -229,8 +229,8 @@ func toEnvironment(context *ManifestLoaderContext, config environment, group str
 		})
 	}
 
-	if errors != nil {
-		return EnvironmentDefinition{}, nil
+	if len(errors) > 0 {
+		return EnvironmentDefinition{}, errors
 	}
 
 	return EnvironmentDefinition{

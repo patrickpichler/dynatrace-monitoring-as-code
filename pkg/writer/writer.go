@@ -82,9 +82,7 @@ func writeProjects(context *WriterContext, projectDefinitions map[string]manifes
 			UseShortSyntaxForSpecialParams: true,
 		}, configs)
 
-		if len(errs) > 0 {
-			errors = append(errors, errs...)
-		}
+		errors = append(errors, errs...)
 	}
 
 	if len(errors) > 0 {
@@ -94,9 +92,7 @@ func writeProjects(context *WriterContext, projectDefinitions map[string]manifes
 	return nil
 }
 
-func collectAllConfigs(p project.Project) []config.Config {
-	var result []config.Config
-
+func collectAllConfigs(p project.Project) (result []config.Config) {
 	for _, configsPerApi := range p.Configs {
 		for _, configs := range configsPerApi {
 			result = append(result, configs...)

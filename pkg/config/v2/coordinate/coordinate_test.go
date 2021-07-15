@@ -50,5 +50,5 @@ func TestMatchShouldReturnFalseOnNonMatching(t *testing.T) {
 		Config:  "tags",
 	})
 
-	assert.Assert(t, !result, "should match")
+	assert.Assert(t, !result, "shouldn't match")
 }

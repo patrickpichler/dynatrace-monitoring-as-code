@@ -75,7 +75,7 @@ func toSetMap(strs []string) map[string]struct{} {
 }
 
 func parseDeleteFile(context *loaderContext) (deleteFileDefinition, error) {
-	var targetFile = context.deleteFile
+	targetFile := context.deleteFile
 
 	if !filepath.IsAbs(targetFile) {
 		targetFile = filepath.Join(context.workingDir, targetFile)
@@ -135,7 +135,7 @@ func parseDeleteEntry(context *loaderContext, index int, entry string) (DeletePo
 
 	parts := strings.SplitN(entry, deleteDelimiter, 2)
 
-	// since we the string must contain at least one delimiter and we
+	// since the string must contain at least one delimiter and we
 	// split the entity by max two, we do not need to test for len of parts
 	apiId := parts[0]
 	entityName := parts[1]

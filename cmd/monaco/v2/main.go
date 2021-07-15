@@ -107,23 +107,25 @@ Examples:
 	return app
 }
 
+func configureLogging(ctx *cli.Context) error {
+	err := util.SetupLogging(ctx.Bool("verbose"))
+
+	if err != nil {
+		return err
+	}
+
+	util.Log.Info("Dynatrace Monitoring as Code v" + version.MonitoringAsCode)
+
+	return nil
+}
+
 func getDeployCommand(fs afero.Fs) cli.Command {
 	command := cli.Command{
 		Name:      "deploy",
 		Usage:     "deploys the given environment",
 		UsageText: "deploy [command options] deployment-manifest",
 		ArgsUsage: "[working directory]",
-		Before: func(ctx *cli.Context) error {
-			err := util.SetupLogging(ctx.Bool("verbose"))
-
-			if err != nil {
-				return err
-			}
-
-			util.Log.Info("Dynatrace Monitoring as Code v" + version.MonitoringAsCode)
-
-			return nil
-		},
+		Before:    configureLogging,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "verbose",
@@ -182,17 +184,7 @@ func getConvertCommand(fs afero.Fs) cli.Command {
 	command := cli.Command{
 		Name:      "convert",
 		ArgsUsage: "<path to monaco project folder to convert>",
-		Before: func(c *cli.Context) error {
-			err := util.SetupLogging(c.Bool("verbose"))
-
-			if err != nil {
-				return err
-			}
-
-			util.Log.Info("Dynatrace Monitoring as Code v" + version.MonitoringAsCode)
-
-			return nil
-		},
+		Before:    configureLogging,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "verbose",
@@ -256,17 +248,7 @@ func getLegacyDeployCommand(fs afero.Fs) cli.Command {
 		Usage:     "deploys the given environment in legacy format",
 		UsageText: "deploy-legacy [command options] [working directory]",
 		ArgsUsage: "[working directory]",
-		Before: func(c *cli.Context) error {
-			err := util.SetupLogging(c.Bool("verbose"))
-
-			if err != nil {
-				return err
-			}
-
-			util.Log.Info("Dynatrace Monitoring as Code v" + version.MonitoringAsCode)
-
-			return nil
-		},
+		Before:    configureLogging,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "verbose",
@@ -333,17 +315,7 @@ func getDownloadCommand(fs afero.Fs) cli.Command {
 		Name:      "download",
 		Usage:     "download the given environment",
 		UsageText: "download [command options] [working directory]",
-		Before: func(c *cli.Context) error {
-			err := util.SetupLogging(c.Bool("verbose"))
-
-			if err != nil {
-				return err
-			}
-
-			util.Log.Info("Dynatrace Monitoring as Code v" + version.MonitoringAsCode)
-
-			return nil
-		},
+		Before:    configureLogging,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "verbose",

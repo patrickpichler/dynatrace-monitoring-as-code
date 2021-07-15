@@ -25,7 +25,7 @@ func Render(template Template, properties map[string]interface{}) (string, error
 	parsedTemplate, found := parsedTemplateCache[template.Id()]
 
 	// if we do not find the template in the template cache, it means that it was
-	// somehow instantiated without calling the template registry functions. ,fa
+	// somehow instantiated without calling the template registry functions.
 	if !found {
 		return "", fmt.Errorf("trying to render unknown template `%s`. this should not happen and is likely a bug",
 			template.Name())

@@ -200,14 +200,14 @@ func parametersToSortData(conf coordinate.Coordinate, parameters []ParameterWith
 }
 
 func GetSortedConfigsForEnvironments(projects []project.Project, environments []string) (map[string][]config.Config, []error) {
-	var errors []error
 	sortedProjectsPerEnvironment, errs := sortProjects(projects, environments)
 
-	if errs != nil {
-		errors = append(errors, errs...)
+	if len(errs) > 0 {
+		return nil, errs
 	}
 
 	result := make(map[string][]config.Config)
+	var errors []error
 
 	for env, sortedProject := range sortedProjectsPerEnvironment {
 		sortedConfigResult := make([]config.Config, 0)
@@ -301,7 +301,6 @@ func configsToSortData(configs []config.Config) ([][]bool, []int) {
 }
 
 func sortProjects(projects []project.Project, environments []string) (ProjectsPerEnvironment, []error) {
-
 	var errors []error
 
 	resultByEnvironment := make(ProjectsPerEnvironment)

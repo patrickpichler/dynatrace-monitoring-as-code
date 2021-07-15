@@ -83,11 +83,7 @@ func WriteConfigs(context *WriterContext, configs []Config) []error {
 		}
 	}
 
-	templateWriteErrors := writeTemplates(context, templates)
-
-	if len(templateWriteErrors) > 0 {
-		writeErrors = append(writeErrors, templateWriteErrors...)
-	}
+	writeErrors = append(writeErrors, writeTemplates(context, templates)...)
 
 	if len(writeErrors) > 0 {
 		return writeErrors
@@ -96,9 +92,7 @@ func WriteConfigs(context *WriterContext, configs []Config) []error {
 	return nil
 }
 
-func writeTemplates(context *WriterContext, templates []configTemplate) []error {
-	var errors []error
-
+func writeTemplates(context *WriterContext, templates []configTemplate) (errors []error) {
 	for _, t := range templates {
 		fullTemplatePath := filepath.Join(context.OutputFolder, t.templatePath)
 		templateDir := filepath.Dir(fullTemplatePath)
@@ -501,9 +495,7 @@ func toConfigDefinition(context *configConverterContext, config Config) (configD
 
 	params, errs := convertParameters(&detailedContext, config.Parameters)
 
-	if len(errs) > 0 {
-		errors = append(errors, errs...)
-	}
+	errors = append(errors, errs...)
 
 	configTemplatePath, template, err := extractTemplate(&detailedContext, config)
 

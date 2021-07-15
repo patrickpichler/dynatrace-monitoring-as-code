@@ -77,7 +77,7 @@ func TestResolveParameterValues(t *testing.T) {
 
 	values, errors := resolveParameterValues(client, &conf, entities, parameters, false)
 
-	assert.Assert(t, len(errors) == 0, "there should be no errors (no errors: %d)", len(errors))
+	assert.Assert(t, len(errors) == 0, "there should be no errors (errors: %s)", errors)
 	assert.Equal(t, name, values[config.NameParameter])
 	assert.Equal(t, owner, values[ownerParameterName])
 	assert.Equal(t, timeout, values[timeoutParameterName])

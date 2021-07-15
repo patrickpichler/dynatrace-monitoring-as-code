@@ -42,7 +42,7 @@ const (
 )
 
 var (
-	envVariableRegex = regexp.MustCompile("{{ *\\.Env\\.([A-Za-z0-9_-]*) *}}")
+	envVariableRegex = regexp.MustCompile(`{{ *\.Env\.([A-Za-z0-9_-]*) *}}`)
 )
 
 type ConverterContext struct {
