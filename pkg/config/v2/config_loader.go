@@ -330,13 +330,14 @@ func getConfigFromDefinition(fs afero.Fs, context *ConfigLoaderContext,
 		name, err := parseParameter(context, environment, configId, NameParameter, definition.Name)
 		if err != nil {
 			errors = append(errors, err)
+		} else {
+			parameters[NameParameter] = name
+
+			for _, ref := range name.GetReferences() {
+				configReferences[ref.Config.ToString()] = ref.Config
+			}
 		}
 
-		parameters[NameParameter] = name
-
-		for _, ref := range name.GetReferences() {
-			configReferences[ref.Config.ToString()] = ref.Config
-		}
 	} else {
 		errors = append(errors, &DetailedDefinitionParserError{
 			DefinitionParserError: DefinitionParserError{

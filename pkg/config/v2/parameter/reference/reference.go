@@ -130,16 +130,19 @@ func writeReferenceParameter(context parameter.ParameterWriterContext) (map[stri
 	}
 
 	result := make(map[string]interface{})
+	sameProject := context.Coordinate.Project == refParam.Config.Project
+	sameApi := context.Coordinate.Api == refParam.Config.Api
+	sameConfig := context.Coordinate.Config == refParam.Config.Config
 
-	if context.Coordinate.Project != refParam.Config.Project {
+	if sameProject {
 		result["project"] = refParam.Config.Project
 	}
 
-	if context.Coordinate.Api != refParam.Config.Api {
+	if !sameProject || !sameApi {
 		result["api"] = refParam.Config.Api
 	}
 
-	if context.Coordinate.Config != refParam.Config.Config {
+	if !sameProject || !sameApi || !sameConfig {
 		result["config"] = refParam.Config.Config
 	}
 
